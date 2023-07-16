@@ -18,3 +18,9 @@
 3. Compile the tkinter app `python3 est2.py`
 
 4. Analyze -> Analyze Games
+
+
+#### Images
+Rating Distribution Graph
+
+<img width="1281" alt="Distribution Rating Graph" src="https://github.com/konpeki02/Chess-analyzer/assets/92644639/76cf2db5-3a13-43d0-9f2b-ce52395cec33">
