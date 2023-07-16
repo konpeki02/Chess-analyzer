@@ -12,8 +12,9 @@
 * `requests`
 
 
-1. Either place a PGN (Portable Game Notation file) in your working directory or use `script.py` to download a file. Just update the username in the `download_games` function. 
+1. Either place a PGN (Portable Game Notation file) in your working directory or use `script.py` to download a file. 
+`script.py` allows for parsing the username from the command line argument or prompts the user if no argument is provided.
 
-2. Compile the tkinter app `python3 est2.py`
+3. Compile the tkinter app `python3 est2.py`
 
-3. Analyze -> Analyze Games
+4. Analyze -> Analyze Games

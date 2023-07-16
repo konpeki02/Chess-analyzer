@@ -5,9 +5,7 @@ import os
 import time
 import chess.pgn
 from analytics import *
-from collections import Counter
-from statistics import mean
-import re
+import matplotlib.pyplot as plt
 
 
 class ChessAnalyzerApp(tk.Tk):
@@ -19,18 +17,15 @@ class ChessAnalyzerApp(tk.Tk):
         self.iconphoto(True, tk.PhotoImage(file=icon_path))
         self.app_image = tk.PhotoImage(file=icon_path)
 
-        # Create a menu bar
         menubar = tk.Menu(self)
         self.config(menu=menubar)
 
-        # Create a File menu
         file_menu = tk.Menu(menubar, tearoff=0)
         file_menu.add_command(label="Download Games", command=self.download_games)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="File", menu=file_menu)
 
-        # Create an Analyze menu
         analyze_menu = tk.Menu(menubar, tearoff=0)
         analyze_menu.add_command(label="Analyze Games", command=self.analyze_games)
         analyze_menu.add_command(label="Rating Distribution", command=self.analyze_rating_distribution)
@@ -44,20 +39,16 @@ class ChessAnalyzerApp(tk.Tk):
         analyze_menu.add_command(label="Game Highlights", command=self.analyze_game_highlighs)
         menubar.add_cascade(label="Analyze", menu=analyze_menu)
 
-        # Create an About menu
         about_menu = tk.Menu(menubar, tearoff=0)
         about_menu.add_command(label="About", command=self.show_about_dialog)
         menubar.add_cascade(label="Help", menu=about_menu)
 
-        # Initialize status variable
         self.status_var = tk.StringVar()
         self.status_var.set("Progress: 0.00% (0/0 games)")
 
-        # Create status label
         self.status_label = tk.Label(self, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W)
         self.status_label.pack(side=tk.BOTTOM, fill=tk.X)
 
-        # Create username entry and download button
         self.username_entry = tk.Entry(self, width=20)
         self.username_entry.insert(0, "Enter Username")
         self.username_entry.bind("<FocusIn>", self.on_entry_focus_in)
@@ -75,7 +66,7 @@ class ChessAnalyzerApp(tk.Tk):
 
     def show_about_dialog(self):
         about_text = (
-            "Version: 1.0\n"
+            "Version: 1.1.0\n"
             "Author: konpeki02\n"
             "Copyright (c) 2023\n"
             "MIT License\n\n"
@@ -86,8 +77,8 @@ class ChessAnalyzerApp(tk.Tk):
         about_window = tk.Toplevel(self)
         about_window.title("About")
         about_window.geometry("370x245")
-        about_window.iconphoto(True, self.app_image)  # Set the icon image
-        about_window.resizable(False, False)  # Disable resizing
+        about_window.iconphoto(True, self.app_image)
+        about_window.resizable(False, False)
 
         about_frame = tk.Frame(about_window, padx=20, pady=10)
         about_frame.pack(fill=tk.BOTH, expand=True)
@@ -152,7 +143,6 @@ class ChessAnalyzerApp(tk.Tk):
                             downloaded_games += 1
                             self.update_progress(downloaded_games, total_games)
 
-        # Calculate elapsed time
         elapsed_time = time.time() - start_time
 
         messagebox.showinfo("Info", f"All games retrieved and written to: {pgn_filename}")
@@ -215,8 +205,41 @@ class ChessAnalyzerApp(tk.Tk):
                     break
                 games.append(game)
 
-        rating_distribution = analyze_rating_distribution(games)
-        messagebox.showinfo("Rating Distribution", str(rating_distribution))
+        win_ratings = []
+        loss_ratings = []
+
+        for game in games:
+            white_rating = int(game.headers.get("WhiteElo", 0))
+            black_rating = int(game.headers.get("BlackElo", 0))
+            result = game.headers.get("Result")
+            if result == "1-0":
+                win_ratings.append(white_rating)
+            elif result == "0-1":
+                loss_ratings.append(black_rating)
+
+        # Count win distribution in increments of 50 Elo
+        win_counts = Counter((rating // 50) * 50 for rating in win_ratings)
+
+        # Count loss distribution in increments of 50 Elo
+        loss_counts = Counter((rating // 50) * 50 for rating in loss_ratings)
+
+        # Create graph for wins
+        win_x = list(win_counts.keys())
+        win_y = list(win_counts.values())
+        plt.bar(win_x, win_y, width=40, color='green')
+
+        # Create graph for losses (inverted)
+        loss_x = list(loss_counts.keys())
+        loss_y = [-count for count in loss_counts.values()]
+        plt.bar(loss_x, loss_y, width=40, color='red')
+
+        # Set y-axis limits
+        max_count = max(max(win_y), max(loss_y))
+        plt.ylim(-max_count, max_count)
+        plt.xlabel("Rating (Elo)")
+        plt.ylabel("Count")
+        plt.title("Win and Loss Distribution by Rating")
+        plt.show()
 
     def analyze_performance_rating(self):
         pgn_file_path = filedialog.askopenfilename(title="Select PGN File", filetypes=[("PGN Files", "*.pgn")])
