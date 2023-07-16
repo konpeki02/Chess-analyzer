@@ -1,3 +1,5 @@
+import sys
+
 import requests
 import os
 import time
@@ -55,4 +57,8 @@ def print_progress(downloaded, total):
 
 
 if __name__ == '__main__':
-    download_games('Hikaru')
+    if len(sys.argv) > 1:
+        username = sys.argv[1]
+    else:
+        username = input("Enter the username: ")
+    download_games(username)
