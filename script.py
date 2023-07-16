@@ -55,4 +55,4 @@ def print_progress(downloaded, total):
 
 
 if __name__ == '__main__':
-    download_games('Snell6969')
+    download_games('Hikaru')
