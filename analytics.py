@@ -176,6 +176,6 @@ def analyze_games(pgn_file):
 
 
 if __name__ == '__main__':
-    pgn_file = "png_files/lichess_AlbertaOil_2023-01-31.pgn"  # Replace with the actual path to your PGN file
+    pgn_file = "file.pgn"  # Replace with the actual path to your PGN file
 
     analyze_games(pgn_file)
