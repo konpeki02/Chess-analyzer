@@ -76,7 +76,7 @@ class ChessAnalyzerApp(tk.Tk):
     def show_about_dialog(self):
         about_text = (
             "Version: 1.0\n"
-            "Author: Antanas Rishko\n"
+            "Author: konpeki02\n"
             "Copyright (c) 2023\n"
             "MIT License\n\n"
             "Your Working Directory:\n{}\n"
