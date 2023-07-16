@@ -1,5 +1,5 @@
 # Chess-analyzer
-`est2.p` contains tkinter interface
+`est2.py` contains tkinter application
 
 `script.py` allows for parsing pgn file with username
 
